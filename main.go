@@ -39,6 +39,7 @@ func main() {
 
 	// 2. Setup Fiber (Web Framework)
 	app := fiber.New()
+	app.Static("/", "./public")
 
 	// Endpoint 1: Memendekkan URL
 	app.Post("/shorten", func(c *fiber.Ctx) error {

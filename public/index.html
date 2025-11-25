@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go URL Shortener 🚀</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #16213e;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 400px;
+            border: 1px solid #0f3460;
+        }
+        h1 { margin-bottom: 1.5rem; color: #00add8; } /* Go Color */
+        input {
+            width: 90%;
+            padding: 12px;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            border: 1px solid #0f3460;
+            background-color: #0f3460;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: none;
+            background-color: #e94560;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #c72c41; }
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #0f3460;
+            border-radius: 6px;
+            display: none; /* Sembunyi dulu */
+            word-break: break-all;
+        }
+        a { color: #00add8; text-decoration: none; font-weight: bold; }
+        .loading { display: none; margin-top: 10px; color: #aaa; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚀 Go Shortener</h1>
+    <p>Masukkan URL panjang Anda di bawah ini:</p>
+    
+    <input type="text" id="longUrl" placeholder="https://youtube.com/..." autocomplete="off">
+    <button onclick="shortenUrl()">Shorten Now</button>
+    
+    <div id="loading" class="loading">Processing...</div>
+    
+    <div id="resultBox" class="result">
+        <small>URL Pendek Anda:</small><br><br>
+        <a id="shortLink" href="#" target="_blank">...</a>
+    </div>
+</div>
+
+<script>
+    async function shortenUrl() {
+        const input = document.getElementById('longUrl').value;
+        const resultBox = document.getElementById('resultBox');
+        const shortLink = document.getElementById('shortLink');
+        const loading = document.getElementById('loading');
+
+        if (!input) {
+            alert("Harap masukkan URL!");
+            return;
+        }
+
+        // Tampilkan loading, sembunyikan hasil lama
+        loading.style.display = 'block';
+        resultBox.style.display = 'none';
+
+        try {
+            // Panggil API Go kita
+            const response = await fetch('/shorten', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: input })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Sukses
+                shortLink.href = data.short_url;
+                shortLink.innerText = data.short_url;
+                resultBox.style.display = 'block';
+            } else {
+                alert("Error: " + data.error);
+            }
+        } catch (error) {
+            alert("Gagal menghubungi server.");
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
