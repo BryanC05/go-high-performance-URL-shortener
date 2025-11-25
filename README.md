@@ -38,5 +38,10 @@ curl -X POST http://localhost:8080/shorten \
 -H "Content-Type: application/json" \
 -d '{"url": "[https://google.com](https://google.com)"}'
 
+# Shorting Youtube URL
+curl -X POST http://localhost:8080/shorten \
+-H "Content-Type: application/json" \
+-d '{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}'
+
 # Run Load Test
 k6 run load-test-go.js
